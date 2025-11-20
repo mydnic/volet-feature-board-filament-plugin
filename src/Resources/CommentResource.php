@@ -9,8 +9,8 @@ use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Forms;
-use Filament\Schemas\Schema;
 use Filament\Resources\Resource;
+use Filament\Schemas\Schema;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Mydnic\VoletFeatureBoard\Models\Comment;
@@ -20,7 +20,7 @@ class CommentResource extends Resource
 {
     protected static ?string $model = Comment::class;
 
-    protected static string | \BackedEnum | null $navigationIcon = 'heroicon-o-chat-bubble-left';
+    protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-chat-bubble-left';
 
     protected static bool $shouldRegisterNavigation = false;
 
@@ -37,10 +37,12 @@ class CommentResource extends Resource
                     ->searchable()
                     ->getSearchResultsUsing(function (string $search) {
                         $userModel = config('volet-feature-board.user_model');
+
                         return $userModel::where('name', 'like', "%{$search}%")->limit(50)->pluck('name', 'id');
                     })
                     ->getOptionLabelUsing(function ($value) {
                         $userModel = config('volet-feature-board.user_model');
+
                         return $userModel::find($value)?->name ?? $value;
                     })
                     ->required(),
@@ -78,12 +80,12 @@ class CommentResource extends Resource
             ->recordActions([
                 ActionGroup::make([
                     EditAction::make(),
-//                    Action::make('Mark As Read')
-//                        ->action(fn (FeedbackMessage $record) => $record->markAsRead())
-//                        ->icon('heroicon-m-eye'),
-//                    Action::make('Mark As Resolved')
-//                        ->action(fn (FeedbackMessage $record) => $record->markAsResolved())
-//                        ->icon('heroicon-m-check'),
+                    //                    Action::make('Mark As Read')
+                    //                        ->action(fn (FeedbackMessage $record) => $record->markAsRead())
+                    //                        ->icon('heroicon-m-eye'),
+                    //                    Action::make('Mark As Resolved')
+                    //                        ->action(fn (FeedbackMessage $record) => $record->markAsResolved())
+                    //                        ->icon('heroicon-m-check'),
                     DeleteAction::make(),
                 ]),
             ])

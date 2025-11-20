@@ -3,8 +3,8 @@
 namespace Mydnic\VoletFeatureBoardFilamentPlugin\Tests;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
-use Orchestra\Testbench\TestCase as Orchestra;
 use Mydnic\VoletFeatureBoardFilamentPlugin\VoletFeatureBoardFilamentPluginServiceProvider;
+use Orchestra\Testbench\TestCase as Orchestra;
 
 class TestCase extends Orchestra
 {
@@ -43,7 +43,7 @@ class TestCase extends Orchestra
             fn (): \Filament\Panel => \Filament\Panel::make()
                 ->id('default')
                 ->default()
-                ->plugin(new \Mydnic\VoletFeatureBoardFilamentPlugin\VoletFeatureBoardFilamentPlugin())
+                ->plugin(new \Mydnic\VoletFeatureBoardFilamentPlugin\VoletFeatureBoardFilamentPlugin)
         );
     }
 }

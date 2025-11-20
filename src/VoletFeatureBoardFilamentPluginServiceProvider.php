@@ -4,7 +4,6 @@ namespace Mydnic\VoletFeatureBoardFilamentPlugin;
 
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
-use Mydnic\VoletFeatureBoardFilamentPlugin\Commands\VoletFeatureBoardFilamentPluginCommand;
 
 class VoletFeatureBoardFilamentPluginServiceProvider extends PackageServiceProvider
 {

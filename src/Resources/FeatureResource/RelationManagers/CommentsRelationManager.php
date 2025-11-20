@@ -8,8 +8,8 @@ use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Forms;
-use Filament\Schemas\Schema;
 use Filament\Resources\RelationManagers\RelationManager;
+use Filament\Schemas\Schema;
 use Filament\Tables;
 use Filament\Tables\Table;
 
@@ -26,10 +26,12 @@ class CommentsRelationManager extends RelationManager
                     ->searchable()
                     ->getSearchResultsUsing(function (string $search) {
                         $userModel = config('volet-feature-board.user_model');
+
                         return $userModel::where('name', 'like', "%{$search}%")->limit(50)->pluck('name', 'id');
                     })
                     ->getOptionLabelUsing(function ($value) {
                         $userModel = config('volet-feature-board.user_model');
+
                         return $userModel::find($value)?->name ?? $value;
                     })
                     ->required(),

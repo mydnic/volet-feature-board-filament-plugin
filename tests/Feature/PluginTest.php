@@ -1,9 +1,9 @@
 <?php
 
+use Filament\Facades\Filament;
 use Mydnic\VoletFeatureBoardFilamentPlugin\Resources\CommentResource;
 use Mydnic\VoletFeatureBoardFilamentPlugin\Resources\FeatureResource;
 use Mydnic\VoletFeatureBoardFilamentPlugin\VoletFeatureBoardFilamentPlugin;
-use Filament\Facades\Filament;
 
 it('registers the plugin', function () {
     $panel = Filament::getPanel('default');

@@ -21,3 +21,13 @@ it('registers the resources', function () {
     expect($resources)->toContain(FeatureResource::class);
     expect($resources)->toContain(CommentResource::class);
 });
+
+it('registers the relation manager', function () {
+    $relations = FeatureResource::getRelations();
+
+    expect($relations)->toContain(\Mydnic\VoletFeatureBoardFilamentPlugin\Resources\FeatureResource\RelationManagers\CommentsRelationManager::class);
+});
+
+it('hides comment resource from navigation', function () {
+    expect(CommentResource::shouldRegisterNavigation())->toBeFalse();
+});

@@ -22,6 +22,8 @@ class CommentResource extends Resource
 
     protected static string | \BackedEnum | null $navigationIcon = 'heroicon-o-chat-bubble-left';
 
+    protected static bool $shouldRegisterNavigation = false;
+
     public static function form(Schema $schema): Schema
     {
         return $schema
@@ -31,8 +33,16 @@ class CommentResource extends Resource
                     ->searchable()
                     ->required(),
                 Forms\Components\Select::make('author_id')
-                    ->relationship('author', 'name')
+                    ->label('Author')
                     ->searchable()
+                    ->getSearchResultsUsing(function (string $search) {
+                        $userModel = config('volet-feature-board.user_model');
+                        return $userModel::where('name', 'like', "%{$search}%")->limit(50)->pluck('name', 'id');
+                    })
+                    ->getOptionLabelUsing(function ($value) {
+                        $userModel = config('volet-feature-board.user_model');
+                        return $userModel::find($value)?->name ?? $value;
+                    })
                     ->required(),
                 Forms\Components\Textarea::make('content')
                     ->required()
@@ -48,9 +58,8 @@ class CommentResource extends Resource
                     ->label('Feature')
                     ->searchable()
                     ->sortable(),
-                Tables\Columns\TextColumn::make('author.name')
-                    ->label('Author')
-                    ->sortable(),
+                Tables\Columns\TextColumn::make('author_name')
+                    ->label('Author'),
                 Tables\Columns\TextColumn::make('content')
                     ->limit(50)
                     ->searchable(),

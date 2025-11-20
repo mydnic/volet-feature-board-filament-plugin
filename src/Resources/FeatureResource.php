@@ -13,9 +13,11 @@ use Filament\Schemas\Schema;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
+use Mydnic\Volet\Features\FeatureManager;
 use Mydnic\VoletFeatureBoard\Enums\FeatureStatus;
 use Mydnic\VoletFeatureBoard\Models\Feature;
 use Mydnic\VoletFeatureBoardFilamentPlugin\Resources\FeatureResource\Pages;
+use Mydnic\VoletFeatureBoardFilamentPlugin\Resources\FeatureResource\RelationManagers\CommentsRelationManager;
 
 class FeatureResource extends Resource
 {
@@ -23,7 +25,9 @@ class FeatureResource extends Resource
 
     protected static string | \BackedEnum | null $navigationIcon = 'heroicon-o-light-bulb';
 
-    protected static ?string $modelLabel = 'Volet Feature Requests';
+    protected static ?string $modelLabel = 'Feature Requests';
+
+    protected static string|null|\UnitEnum $navigationGroup = 'Volet';
 
     public static function form(Schema $schema): Schema
     {
@@ -34,7 +38,10 @@ class FeatureResource extends Resource
                     ->maxLength(255),
                 Forms\Components\Select::make('category')
                     ->options(
-                        collect(config('volet-feature-board.categories', []))
+                        collect(
+                            app(FeatureManager::class)->getFeature('feedback-messages')
+                                ->getCategories()
+                        )
                             ->mapWithKeys(fn ($category) => [$category['slug'] => $category['name']])
                     )
                     ->required(),
@@ -45,8 +52,16 @@ class FeatureResource extends Resource
                     ->required()
                     ->columnSpanFull(),
                 Forms\Components\Select::make('author_id')
-                    ->relationship('author', 'name')
+                    ->label('Author')
                     ->searchable()
+                    ->getSearchResultsUsing(function (string $search) {
+                        $userModel = config('auth.providers.users.model');
+                        return $userModel::where('name', 'like', "%{$search}%")->limit(50)->pluck('name', 'id');
+                    })
+                    ->getOptionLabelUsing(function ($value) {
+                        $userModel = config('auth.providers.users.model');
+                        return $userModel::find($value)?->name ?? $value;
+                    })
                     ->required(),
             ]);
     }
@@ -61,9 +76,8 @@ class FeatureResource extends Resource
                     ->searchable(),
                 Tables\Columns\TextColumn::make('status')
                     ->badge(),
-                Tables\Columns\TextColumn::make('author.name')
-                    ->label('Author')
-                    ->sortable(),
+                Tables\Columns\TextColumn::make('author_name')
+                    ->label('Author'),
                 Tables\Columns\TextColumn::make('votes_count')
                     ->counts('votes')
                     ->label('Votes')
@@ -102,7 +116,7 @@ class FeatureResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
+            CommentsRelationManager::class,
         ];
     }
 

@@ -4,20 +4,22 @@ namespace Mydnic\VoletFeatureBoardFilamentPlugin;
 
 use Filament\Contracts\Plugin;
 use Filament\Panel;
-use Mydnic\VoletFeedbackMessagesFilamentPlugin\Resources\VoletFeedbackMessagesResource;
+use Mydnic\VoletFeatureBoardFilamentPlugin\Resources\CommentResource;
+use Mydnic\VoletFeatureBoardFilamentPlugin\Resources\FeatureResource;
 
 class VoletFeatureBoardFilamentPlugin implements Plugin
 {
     public function getId(): string
     {
-        return 'volet-feedback-messages';
+        return 'volet-feature-board';
     }
 
     public function register(Panel $panel): void
     {
         $panel
             ->resources([
-                VoletFeedbackMessagesResource::class,
+                FeatureResource::class,
+                CommentResource::class,
             ]);
     }
 

@@ -20,6 +20,15 @@ class TestCase extends Orchestra
     protected function getPackageProviders($app)
     {
         return [
+            \Filament\FilamentServiceProvider::class,
+            \Livewire\LivewireServiceProvider::class,
+            \Filament\Support\SupportServiceProvider::class,
+            \Filament\Actions\ActionsServiceProvider::class,
+            \Filament\Forms\FormsServiceProvider::class,
+            \Filament\Infolists\InfolistsServiceProvider::class,
+            \Filament\Notifications\NotificationsServiceProvider::class,
+            \Filament\Tables\TablesServiceProvider::class,
+            \Filament\Widgets\WidgetsServiceProvider::class,
             VoletFeatureBoardFilamentPluginServiceProvider::class,
         ];
     }
@@ -28,10 +37,13 @@ class TestCase extends Orchestra
     {
         config()->set('database.default', 'testing');
 
-        /*
-         foreach (\Illuminate\Support\Facades\File::allFiles(__DIR__ . '/../database/migrations') as $migration) {
-            (include $migration->getRealPath())->up();
-         }
-         */
+        $app['config']->set('app.key', 'base64:Hupx3yAySikrM2/edkZQNQHslgDWYfiBfCuSThJ5SK8=');
+
+        \Filament\Facades\Filament::registerPanel(
+            fn (): \Filament\Panel => \Filament\Panel::make()
+                ->id('default')
+                ->default()
+                ->plugin(new \Mydnic\VoletFeatureBoardFilamentPlugin\VoletFeatureBoardFilamentPlugin())
+        );
     }
 }

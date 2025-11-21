@@ -25,12 +25,12 @@ class CommentsRelationManager extends RelationManager
                     ->label('Author')
                     ->searchable()
                     ->getSearchResultsUsing(function (string $search) {
-                        $userModel = config('volet-feature-board.user_model');
+                        $userModel = config('auth.providers.users.model');
 
                         return $userModel::where('name', 'like', "%{$search}%")->limit(50)->pluck('name', 'id');
                     })
                     ->getOptionLabelUsing(function ($value) {
-                        $userModel = config('volet-feature-board.user_model');
+                        $userModel = config('auth.providers.users.model');
 
                         return $userModel::find($value)?->name ?? $value;
                     })

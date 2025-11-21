@@ -29,6 +29,12 @@ class FeatureResource extends Resource
 
     protected static string|null|\UnitEnum $navigationGroup = 'Volet';
 
+    public static function getNavigationBadge(): ?string
+    {
+        $count = (int) static::getModel()::where('status', FeatureStatus::PENDING)->count();
+        return $count > 0 ? (string) $count : null;
+    }
+
     public static function form(Schema $schema): Schema
     {
         return $schema
@@ -39,7 +45,7 @@ class FeatureResource extends Resource
                 Forms\Components\Select::make('category')
                     ->options(
                         collect(
-                            app(FeatureManager::class)->getFeature('feedback-messages')
+                            app(FeatureManager::class)->getFeature('volet-feature-board')
                                 ->getCategories()
                         )
                             ->mapWithKeys(fn ($category) => [$category['slug'] => $category['name']])
@@ -77,7 +83,14 @@ class FeatureResource extends Resource
                 Tables\Columns\TextColumn::make('category')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('status')
-                    ->badge(),
+                    ->badge()
+                    ->color(fn ($state) => match ($state instanceof FeatureStatus ? $state : (is_string($state) ? FeatureStatus::tryFrom($state) : null)) {
+                        FeatureStatus::APPROVED => 'success',
+                        FeatureStatus::PENDING => 'warning',
+                        FeatureStatus::REJECTED => 'danger',
+                        FeatureStatus::COMPLETED => 'gray',
+                        default => 'gray',
+                    }),
                 Tables\Columns\TextColumn::make('author_name')
                     ->label('Author'),
                 Tables\Columns\TextColumn::make('votes_count')
@@ -94,17 +107,40 @@ class FeatureResource extends Resource
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
-                //
+                Tables\Filters\SelectFilter::make('category')
+                    ->options(
+                        collect(
+                            app(FeatureManager::class)->getFeature('volet-feature-board')
+                                ->getCategories()
+                        )
+                            ->mapWithKeys(fn ($category) => [$category['slug'] => $category['name']])
+                    ),
+                Tables\Filters\SelectFilter::make('status')
+                    ->options(FeatureStatus::class),
             ])
             ->recordActions([
                 ActionGroup::make([
                     EditAction::make(),
-                    //                    Action::make('Mark As Read')
-                    //                        ->action(fn (FeedbackMessage $record) => $record->markAsRead())
-                    //                        ->icon('heroicon-m-eye'),
-                    //                    Action::make('Mark As Resolved')
-                    //                        ->action(fn (FeedbackMessage $record) => $record->markAsResolved())
-                    //                        ->icon('heroicon-m-check'),
+                    Action::make('Mark as Pending')
+                        ->action(function (Feature $record) {
+                            $record->update(['status' => FeatureStatus::PENDING]);
+                        })
+                        ->visible(fn (Feature $record) => $record->status !== FeatureStatus::PENDING),
+                    Action::make('Mark as Approved')
+                        ->action(function (Feature $record) {
+                            $record->update(['status' => FeatureStatus::APPROVED]);
+                        })
+                        ->visible(fn (Feature $record) => $record->status !== FeatureStatus::APPROVED),
+                    Action::make('Mark as Rejected')
+                        ->action(function (Feature $record) {
+                            $record->update(['status' => FeatureStatus::REJECTED]);
+                        })
+                        ->visible(fn (Feature $record) => $record->status !== FeatureStatus::REJECTED),
+                    Action::make('Mark as Completed')
+                        ->action(function (Feature $record) {
+                            $record->update(['status' => FeatureStatus::COMPLETED]);
+                        })
+                        ->visible(fn (Feature $record) => $record->status !== FeatureStatus::COMPLETED),
                     DeleteAction::make(),
                 ]),
             ])

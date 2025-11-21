@@ -36,12 +36,12 @@ class CommentResource extends Resource
                     ->label('Author')
                     ->searchable()
                     ->getSearchResultsUsing(function (string $search) {
-                        $userModel = config('volet-feature-board.user_model');
+                        $userModel = config('auth.providers.users.model');
 
                         return $userModel::where('name', 'like', "%{$search}%")->limit(50)->pluck('name', 'id');
                     })
                     ->getOptionLabelUsing(function ($value) {
-                        $userModel = config('volet-feature-board.user_model');
+                        $userModel = config('auth.providers.users.model');
 
                         return $userModel::find($value)?->name ?? $value;
                     })
@@ -80,12 +80,6 @@ class CommentResource extends Resource
             ->recordActions([
                 ActionGroup::make([
                     EditAction::make(),
-                    //                    Action::make('Mark As Read')
-                    //                        ->action(fn (FeedbackMessage $record) => $record->markAsRead())
-                    //                        ->icon('heroicon-m-eye'),
-                    //                    Action::make('Mark As Resolved')
-                    //                        ->action(fn (FeedbackMessage $record) => $record->markAsResolved())
-                    //                        ->icon('heroicon-m-check'),
                     DeleteAction::make(),
                 ]),
             ])

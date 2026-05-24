@@ -23,6 +23,8 @@ class CommentResource extends Resource
 
     protected static bool $shouldRegisterNavigation = false;
 
+    protected static ?string $slug = 'volet-feature-comments';
+
     public static function form(Schema $schema): Schema
     {
         return $schema

@@ -2,6 +2,10 @@
 
 All notable changes to `volet-feature-board-filament-plugin` will be documented in this file.
 
+## v2.1.0 - 2026-06-02
+
+Support Laravel 13
+
 ## v2.0.1 - 2026-05-24
 
 ### What's Changed

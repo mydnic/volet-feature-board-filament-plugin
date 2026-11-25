@@ -3,6 +3,7 @@
 use Filament\Facades\Filament;
 use Mydnic\VoletFeatureBoardFilamentPlugin\Resources\CommentResource;
 use Mydnic\VoletFeatureBoardFilamentPlugin\Resources\FeatureResource;
+use Mydnic\VoletFeatureBoardFilamentPlugin\Resources\FeatureResource\RelationManagers\CommentsRelationManager;
 use Mydnic\VoletFeatureBoardFilamentPlugin\VoletFeatureBoardFilamentPlugin;
 
 it('registers the plugin', function () {
@@ -25,7 +26,7 @@ it('registers the resources', function () {
 it('registers the relation manager', function () {
     $relations = FeatureResource::getRelations();
 
-    expect($relations)->toContain(\Mydnic\VoletFeatureBoardFilamentPlugin\Resources\FeatureResource\RelationManagers\CommentsRelationManager::class);
+    expect($relations)->toContain(CommentsRelationManager::class);
 });
 
 it('hides comment resource from navigation', function () {

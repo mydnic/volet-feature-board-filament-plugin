@@ -2,7 +2,19 @@
 
 namespace Mydnic\VoletFeatureBoardFilamentPlugin\Tests;
 
+use Filament\Actions\ActionsServiceProvider;
+use Filament\Facades\Filament;
+use Filament\FilamentServiceProvider;
+use Filament\Forms\FormsServiceProvider;
+use Filament\Infolists\InfolistsServiceProvider;
+use Filament\Notifications\NotificationsServiceProvider;
+use Filament\Panel;
+use Filament\Support\SupportServiceProvider;
+use Filament\Tables\TablesServiceProvider;
+use Filament\Widgets\WidgetsServiceProvider;
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Livewire\LivewireServiceProvider;
+use Mydnic\VoletFeatureBoardFilamentPlugin\VoletFeatureBoardFilamentPlugin;
 use Mydnic\VoletFeatureBoardFilamentPlugin\VoletFeatureBoardFilamentPluginServiceProvider;
 use Orchestra\Testbench\TestCase as Orchestra;
 
@@ -20,15 +32,15 @@ class TestCase extends Orchestra
     protected function getPackageProviders($app)
     {
         return [
-            \Filament\FilamentServiceProvider::class,
-            \Livewire\LivewireServiceProvider::class,
-            \Filament\Support\SupportServiceProvider::class,
-            \Filament\Actions\ActionsServiceProvider::class,
-            \Filament\Forms\FormsServiceProvider::class,
-            \Filament\Infolists\InfolistsServiceProvider::class,
-            \Filament\Notifications\NotificationsServiceProvider::class,
-            \Filament\Tables\TablesServiceProvider::class,
-            \Filament\Widgets\WidgetsServiceProvider::class,
+            FilamentServiceProvider::class,
+            LivewireServiceProvider::class,
+            SupportServiceProvider::class,
+            ActionsServiceProvider::class,
+            FormsServiceProvider::class,
+            InfolistsServiceProvider::class,
+            NotificationsServiceProvider::class,
+            TablesServiceProvider::class,
+            WidgetsServiceProvider::class,
             VoletFeatureBoardFilamentPluginServiceProvider::class,
         ];
     }
@@ -39,11 +51,11 @@ class TestCase extends Orchestra
 
         $app['config']->set('app.key', 'base64:Hupx3yAySikrM2/edkZQNQHslgDWYfiBfCuSThJ5SK8=');
 
-        \Filament\Facades\Filament::registerPanel(
-            fn (): \Filament\Panel => \Filament\Panel::make()
+        Filament::registerPanel(
+            fn (): Panel => Panel::make()
                 ->id('default')
                 ->default()
-                ->plugin(new \Mydnic\VoletFeatureBoardFilamentPlugin\VoletFeatureBoardFilamentPlugin)
+                ->plugin(new VoletFeatureBoardFilamentPlugin)
         );
     }
 }

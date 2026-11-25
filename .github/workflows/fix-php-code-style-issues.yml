@@ -2,6 +2,10 @@ name: Fix PHP code style issues
 
 on:
   push:
+    # Branches only. A tag push checks out a detached HEAD, which the commit
+    # step below has no branch to push back onto.
+    branches:
+      - '**'
     paths:
       - '**.php'
       - '.github/workflows/fix-php-code-style-issues.yml'
@@ -15,10 +19,12 @@ jobs:
     timeout-minutes: 5
 
     steps:
+      # No `ref:` input. This workflow only runs on `push`, where
+      # `github.head_ref` is always the empty string, so the input never did
+      # anything. Checkout's own default resolves the pushed branch, which is
+      # what the commit step needs to push back onto.
       - name: Checkout code
         uses: actions/checkout@v7
-        with:
-          ref: ${{ github.head_ref }}
 
       - name: Setup PHP
         uses: shivammathur/setup-php@eb7c497e18156a6bbabfef1d3a82760b9eda3962 # v2.40.0
